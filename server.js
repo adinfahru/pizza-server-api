@@ -298,9 +298,11 @@ server.post("/api/contact", async function contactForm(req, res) {
   res.send({ success: "Message received" });
 });
 
+const HOST = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`;
+
 const start = async () => {
   try {
-    await server.listen({ port: PORT });
+    await server.listen({ host: HOST, port: PORT });
     console.log(`Server listening on port ${PORT}`);
   } catch (err) {
     console.error(err);
@@ -319,8 +321,7 @@ server.addHook('preHandler', (req, res, done) => {
     done();
 });
 
-const HOST = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`;
 
-await server.listen({ host: HOST, port: PORT });
+
 
 start();
