@@ -210,7 +210,7 @@ server.post("/api/order", async function createOrder(req, res) {
 });
 
 server.get("/api/past-orders", async function getPastOrders(req, res) {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = 20;
@@ -307,5 +307,20 @@ const start = async () => {
     process.exit(1);
   }
 };
+
+server.addHook('preHandler', (req, res, done) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST");
+    res.header("Access-Control-Allow-Headers",  "*");
+    const isPreflight = /options/i.test(req.method);
+    if (isPreflight) {
+        return res.send();
+    }  
+    done();
+});
+
+const HOST = ("RENDER" in process.env) ? `0.0.0.0` : `localhost`;
+
+await server.listen({ host: HOST, port: PORT });
 
 start();
